@@ -30,8 +30,8 @@ export async function GET() {
     });
     
     // Merge database toggles with defaults in case some are not in DB
-    const list = DEFAULT_FEATURES.map(def => {
-      const match = toggles.find(t => t.key === def.key);
+    const list = DEFAULT_FEATURES.map((def: any) => {
+      const match = toggles.find((t: any) => t.key === def.key);
       return {
         key: def.key,
         nameEn: def.nameEn,
