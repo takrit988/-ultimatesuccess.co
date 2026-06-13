@@ -60,7 +60,7 @@ export default async function AdminCoursesPage() {
       orderBy: { createdAt: "desc" },
     });
     if (dbCourses.length > 0) {
-      courses = dbCourses.map((c) => ({
+      courses = dbCourses.map((c: any) => ({
         id: c.id,
         slug: c.slug,
         titleEn: c.titleEn,

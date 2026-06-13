@@ -44,7 +44,7 @@ export default async function AdminUsersPage() {
       orderBy: { createdAt: "desc" },
     });
     if (dbUsers.length > 0) {
-      users = dbUsers.map((u) => ({
+      users = dbUsers.map((u: any) => ({
         id: u.id,
         email: u.email,
         role: u.role,
