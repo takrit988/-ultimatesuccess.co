@@ -51,8 +51,8 @@ export default async function AdminBlogPage() {
     return <FeatureDisabled moduleNameEn="Blog & Media Section" moduleNameTh="ระบบบล็อกและสื่อ" isAdminPage={true} />;
   }
 
-  let posts = MOCK_POSTS;
-  let categories = MOCK_CATEGORIES;
+  let posts: any[] = MOCK_POSTS;
+  let categories: any[] = MOCK_CATEGORIES;
 
   try {
     // 1. Fetch live categories
@@ -60,7 +60,7 @@ export default async function AdminBlogPage() {
       orderBy: { nameEn: "asc" },
     });
     if (dbCategories.length > 0) {
-      categories = dbCategories.map((c) => ({
+      categories = dbCategories.map((c: any) => ({
         id: c.id,
         slug: c.slug,
         nameEn: c.nameEn,
@@ -74,7 +74,7 @@ export default async function AdminBlogPage() {
       orderBy: { createdAt: "desc" },
     });
     if (dbPosts.length > 0) {
-      posts = dbPosts.map((p) => ({
+      posts = dbPosts.map((p: any) => ({
         id: p.id,
         slug: p.slug,
         titleEn: p.titleEn,
