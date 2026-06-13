@@ -1,0 +1,249 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  CONTENT_EDITOR
+  COURSE_MANAGER
+  MEMBER
+}
+
+model User {
+  id             String            @id @default(uuid())
+  email          String            @unique
+  passwordHash   String
+  role           UserRole          @default(MEMBER)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  profile        MemberProfile?
+  enrollments    Enrollment[]
+  blogPosts      BlogPost[]
+  subscription   Subscription?
+  lessonProgress LessonProgress[]
+  tickets        Ticket[]
+  leads          CrmLead[]
+  affiliateProfile AffiliateProfile?
+}
+
+model MemberProfile {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company    String?
+  position   String?
+  phone      String?
+  bio        String?
+  website    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Instructor {
+  id        String   @id @default(uuid())
+  nameEn    String
+  nameTh    String
+  titleEn   String
+  titleTh   String
+  bioEn     String
+  bioTh     String
+  avatar    String   // URL
+  website   String?
+  linkedin  String?
+  courses   Course[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Course {
+  id               String            @id @default(uuid())
+  slug             String            @unique
+  titleEn          String
+  titleTh          String
+  shortDescEn      String
+  shortDescTh      String
+  descriptionEn    String
+  descriptionTh    String
+  category         String
+  tags             String[]
+  instructorId     String
+  instructor       Instructor        @relation(fields: [instructorId], references: [id])
+  courseType       String            // ONLINE, ONSITE, HYBRID
+  status           String            // DRAFT, PUBLISHED, ARCHIVED
+  startDate        DateTime?
+  endDate          DateTime?
+  price            Float
+  thumbnail        String
+  gallery          String[]
+  curriculum       Json              // Structured sections/lectures
+  faq              Json              // JSON array of QA items
+  learningOutcomes String[]
+  enrollments      Enrollment[]
+  banners          PromotionBanner[]
+  lessonProgress   LessonProgress[]
+  tickets          Ticket[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model Enrollment {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  courseId      String
+  course        Course   @relation(fields: [courseId], references: [id])
+  status        String   // ACTIVE, COMPLETED, CANCELLED
+  enrolledAt    DateTime @default(now())
+  pricePaid     Float
+  paymentId     String?
+  paymentStatus String   // PENDING, PAID, FAILED
+}
+
+model BlogCategory {
+  id        String     @id @default(uuid())
+  slug      String     @unique
+  nameEn    String
+  nameTh    String
+  posts     BlogPost[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model BlogPost {
+  id                   String       @id @default(uuid())
+  slug                 String       @unique
+  titleEn              String
+  titleTh              String
+  contentEn            String
+  contentTh            String
+  excerptEn            String?
+  excerptTh            String?
+  categoryId           String
+  category             BlogCategory @relation(fields: [categoryId], references: [id])
+  tags                 String[]
+  featuredImage        String
+  status               String       // DRAFT, PUBLISHED, SCHEDULED
+  isFeatured           Boolean      @default(false)
+  scheduledPublishDate DateTime?
+  authorId             String
+  author               User         @relation(fields: [authorId], references: [id])
+  seoTitleEn           String?
+  seoTitleTh           String?
+  seoDescEn            String?
+  seoDescTh            String?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+}
+
+model PromotionBanner {
+  id          String    @id @default(uuid())
+  courseId    String
+  course      Course    @relation(fields: [courseId], references: [id])
+  headlineEn  String
+  headlineTh  String
+  ctaTextEn   String
+  ctaTextTh   String
+  ctaLink     String
+  image       String
+  startDate   DateTime?
+  endDate     DateTime?
+  priority    Int       @default(0)
+  status      String    // ACTIVE, INACTIVE
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum MembershipTier {
+  FREE
+  GOLD
+  PLATINUM
+}
+
+model Subscription {
+  id        String         @id @default(uuid())
+  userId    String         @unique
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tier      MembershipTier @default(FREE)
+  status    String         // ACTIVE, EXPIRED, CANCELLED
+  expiresAt DateTime?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model LessonProgress {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonId    String   // Reference to lesson ID in Course curriculum JSON
+  isCompleted Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, courseId, lessonId])
+}
+
+model Ticket {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId    String
+  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  ticketCode  String    @unique // e.g. USP-ELM-9871A
+  status      String    // UNUSED, USED, CANCELLED
+  checkedInAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL
+  WON
+  LOST
+}
+
+model CrmLead {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  company      String?
+  position     String?
+  phone        String?
+  status       LeadStatus @default(NEW)
+  notes        String[]   // Activity logs / interaction history
+  assignedToId String?
+  assignedTo   User?      @relation(fields: [assignedToId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model AffiliateProfile {
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  referralCode     String   @unique // e.g. USP-REF-1092
+  totalSignups     Int      @default(0)
+  earnings         Float    @default(0.0)
+  unpaidBalance    Float    @default(0.0)
+  referralLinkHits Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model FeatureToggle {
+  id        String   @id @default(uuid())
+  key       String   @unique // e.g. bi, crm, courses, blog, instructors, users, tickets, affiliate
+  nameEn    String
+  nameTh    String
+  isEnabled Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+}
+

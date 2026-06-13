@@ -1,0 +1,28 @@
+[
+  {
+    "id": "inst-1",
+    "nameEn": "Dr. Walter Peterson",
+    "nameTh": "ดร. วอลเตอร์ พีเตอร์สัน",
+    "titleEn": "Executive Leadership Coach & Strategist",
+    "titleTh": "โค้ชและนักยุทธศาสตร์การนำทางผู้บริหาร",
+    "bioEn": "Over 20 years of experience coaching Fortune 500 CEOs and enterprise executives globally in scale-up strategy.",
+    "bioTh": "ประสบการณ์กว่า 20 ปีในการโค้ชซีอีโอ Fortune 500 และผู้บริหารองค์กรทั่วโลกในการวางกลยุทธ์การเติบโต",
+    "avatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400",
+    "website": "https://ultimatesuccess.co",
+    "linkedin": "https://linkedin.com",
+    "roleType": "EXECUTIVE"
+  },
+  {
+    "id": "inst-2",
+    "nameEn": "Coach Pitchaya S.",
+    "nameTh": "โค้ชพิชญะ เอส.",
+    "titleEn": "SME Scaling Specialist & Marketing Architect",
+    "titleTh": "ผู้เชี่ยวชาญการขยายขนาด SME และสถาปนิกการตลาด",
+    "bioEn": "Helping retail and services businesses scale through digital transformation and automated customer acquisition pipelines.",
+    "bioTh": "ช่วยธุรกิจค้าปลีกและบริการเติบโตอย่างมั่นคงผ่านการเปลี่ยนผ่านดิจิทัลและการตลาดอัตโนมัติ",
+    "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400",
+    "website": "https://ultimatesuccess.co",
+    "linkedin": "https://linkedin.com",
+    "roleType": "COACH"
+  }
+]
